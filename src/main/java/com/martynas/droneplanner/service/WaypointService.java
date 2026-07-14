@@ -4,6 +4,7 @@ import com.martynas.droneplanner.entity.Waypoint;
 import com.martynas.droneplanner.entity.Mission;
 import com.martynas.droneplanner.repository.MissionRepository;
 import com.martynas.droneplanner.repository.WaypointRepository;
+import com.martynas.droneplanner.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,11 @@ public class WaypointService {
                                    long missionId) {
 
         Mission mission = missionRepository.findById(missionId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mission not found with id: " + missionId
+                        )
+                );
 
         Waypoint waypoint = new Waypoint(
                 latitude,
@@ -52,7 +57,11 @@ public class WaypointService {
     // Delete waypoint
     public void deleteWaypoint(Long waypointId) {
         waypointRepository.findById(waypointId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Waypoint not found with id: " + waypointId
+                        )
+                );
 
         waypointRepository.deleteById(waypointId);
     }
@@ -66,7 +75,11 @@ public class WaypointService {
             int orderNumber
     ) {
         Waypoint waypoint = waypointRepository.findById(waypointId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Waypoint not found with id: " + waypointId
+                        )
+                );
 
         waypoint.setLatitude(latitude);
         waypoint.setLongitude(longitude);

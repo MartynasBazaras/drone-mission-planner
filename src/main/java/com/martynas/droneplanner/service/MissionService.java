@@ -3,6 +3,7 @@ package com.martynas.droneplanner.service;
 import com.martynas.droneplanner.entity.Mission;
 import com.martynas.droneplanner.repository.MissionRepository;
 import com.martynas.droneplanner.repository.WaypointRepository;
+import com.martynas.droneplanner.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,11 @@ public class MissionService {
     @Transactional
     public void deleteMission(Long missionId) {
         missionRepository.findById(missionId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mission not found with id: " + missionId
+                        )
+                );
 
         waypointRepository.deleteByMissionId(missionId);
         missionRepository.deleteById(missionId);
@@ -52,7 +57,11 @@ public class MissionService {
             String description
     ) {
         Mission mission = missionRepository.findById(missionId)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mission not found with id: " + missionId
+                        )
+                );
 
         mission.setName(name);
         mission.setDescription(description);
