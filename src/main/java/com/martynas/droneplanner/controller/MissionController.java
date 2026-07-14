@@ -37,4 +37,17 @@ public class MissionController {
     public void deleteMission(@PathVariable Long missionId) {
         missionService.deleteMission(missionId);
     }
+
+    // Update an existing mission
+    @PutMapping("/missions/{missionId}")
+    public Mission updateMission(
+            @PathVariable Long missionId,
+            @RequestBody Mission mission
+    ) {
+        return missionService.updateMission(
+                missionId,
+                mission.getName(),
+                mission.getDescription()
+        );
+    }
 }

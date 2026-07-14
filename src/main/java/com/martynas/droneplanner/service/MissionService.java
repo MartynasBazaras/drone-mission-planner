@@ -44,4 +44,19 @@ public class MissionService {
         waypointRepository.deleteByMissionId(missionId);
         missionRepository.deleteById(missionId);
     }
+
+    // Update an existing mission
+    public Mission updateMission(
+            Long missionId,
+            String name,
+            String description
+    ) {
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow();
+
+        mission.setName(name);
+        mission.setDescription(description);
+
+        return missionRepository.save(mission);
+    }
 }

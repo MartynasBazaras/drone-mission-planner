@@ -56,4 +56,23 @@ public class WaypointService {
 
         waypointRepository.deleteById(waypointId);
     }
+
+    // Update an existing waypoint
+    public Waypoint updateWaypoint(
+            Long waypointId,
+            double latitude,
+            double longitude,
+            double altitude,
+            int orderNumber
+    ) {
+        Waypoint waypoint = waypointRepository.findById(waypointId)
+                .orElseThrow();
+
+        waypoint.setLatitude(latitude);
+        waypoint.setLongitude(longitude);
+        waypoint.setAltitude(altitude);
+        waypoint.setOrderNumber(orderNumber);
+
+        return waypointRepository.save(waypoint);
+    }
 }

@@ -47,4 +47,19 @@ public class WaypointController {
     public void deleteWaypoint(@PathVariable Long waypointId) {
         waypointService.deleteWaypoint(waypointId);
     }
+
+    // Update an existing waypoint
+    @PutMapping("/waypoints/{waypointId}")
+    public Waypoint updateWaypoint(
+            @PathVariable Long waypointId,
+            @RequestBody Waypoint waypoint
+    ) {
+        return waypointService.updateWaypoint(
+                waypointId,
+                waypoint.getLatitude(),
+                waypoint.getLongitude(),
+                waypoint.getAltitude(),
+                waypoint.getOrderNumber()
+        );
+    }
 }
