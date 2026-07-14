@@ -10,4 +10,7 @@ public interface WaypointRepository extends JpaRepository<Waypoint, Long> {
 
     // Find waypoints by mission and sort by route order
     List<Waypoint> findByMissionIdOrderByOrderNumberAsc(Long missionId);
+
+    // Delete all waypoints by mission ID
+    void deleteByMissionId(Long missionId);
 }

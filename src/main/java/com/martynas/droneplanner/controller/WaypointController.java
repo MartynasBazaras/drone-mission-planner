@@ -41,4 +41,10 @@ public class WaypointController {
     ) {
         return waypointService.getwaypointsByMission(missionId);
     }
+
+    // Delete waypoint
+    @DeleteMapping("/waypoints/{waypointId}")
+    public void deleteWaypoint(@PathVariable Long waypointId) {
+        waypointService.deleteWaypoint(waypointId);
+    }
 }

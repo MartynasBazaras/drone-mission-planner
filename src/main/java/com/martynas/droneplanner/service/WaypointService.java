@@ -48,4 +48,12 @@ public class WaypointService {
         return waypointRepository.
                 findByMissionIdOrderByOrderNumberAsc(missionId);
     }
+
+    // Delete waypoint
+    public void deleteWaypoint(Long waypointId) {
+        waypointRepository.findById(waypointId)
+                .orElseThrow();
+
+        waypointRepository.deleteById(waypointId);
+    }
 }

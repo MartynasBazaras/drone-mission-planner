@@ -2,10 +2,7 @@ package com.martynas.droneplanner.controller;
 
 import com.martynas.droneplanner.entity.Mission;
 import com.martynas.droneplanner.service.MissionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +30,11 @@ public class MissionController {
                 mission.getName(),
                 mission.getDescription()
         );
+    }
+
+    // Delete mission
+    @DeleteMapping("/missions/{missionId}")
+    public void deleteMission(@PathVariable Long missionId) {
+        missionService.deleteMission(missionId);
     }
 }
