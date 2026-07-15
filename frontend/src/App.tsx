@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import type React from 'react'
 import './App.css'
 
 const API_URL = 'http://localhost:8080'
@@ -41,6 +42,10 @@ function App() {
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const [isSavingMission, setIsSavingMission] = useState(false)
+  const [isSavingWaypoint, setIsSavingWaypoint] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   // Load missions when the application starts
   useEffect(() => {
@@ -113,7 +118,9 @@ function App() {
   }
 
   // Create or update a mission
-  async function saveMission(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function saveMission(
+      event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault()
     setError('')
 
@@ -121,6 +128,8 @@ function App() {
     const url = isEditing
         ? `${API_URL}/missions/${editingMissionId}`
         : `${API_URL}/missions`
+
+    setIsSavingMission(true)
 
     try {
       const response = await fetch(url, {
@@ -140,12 +149,20 @@ function App() {
 
       resetMissionForm()
       await loadMissions()
+
+      showSuccess(
+          isEditing
+              ? 'Mission updated successfully'
+              : 'Mission created successfully',
+      )
     } catch (requestError) {
       setError(
           requestError instanceof Error
               ? requestError.message
               : 'Could not save mission',
       )
+    } finally {
+      setIsSavingMission(false)
     }
   }
 
@@ -183,6 +200,9 @@ function App() {
       }
 
       await loadMissions()
+
+      showSuccess('Mission deleted successfully')
+
     } catch (requestError) {
       setError(
           requestError instanceof Error
@@ -194,7 +214,7 @@ function App() {
 
   // Create or update a waypoint
   async function saveWaypoint(
-      event: FormEvent<HTMLFormElement>,
+      event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault()
 
@@ -209,6 +229,8 @@ function App() {
     const url = isEditing
         ? `${API_URL}/waypoints/${editingWaypointId}`
         : `${API_URL}/missions/${selectedMission.id}/waypoints`
+
+    setIsSavingWaypoint(true)
 
     try {
       const response = await fetch(url, {
@@ -230,12 +252,20 @@ function App() {
 
       resetWaypointForm()
       await loadWaypoints(selectedMission)
+
+      showSuccess(
+          isEditing
+              ? 'Waypoint updated successfully'
+              : 'Waypoint added successfully',
+      )
     } catch (requestError) {
       setError(
           requestError instanceof Error
               ? requestError.message
               : 'Could not save waypoint',
       )
+    } finally {
+      setIsSavingWaypoint(false)
     }
   }
 
@@ -272,6 +302,9 @@ function App() {
       }
 
       await loadWaypoints(selectedMission)
+
+      showSuccess('Waypoint deleted successfully')
+
     } catch (requestError) {
       setError(
           requestError instanceof Error
@@ -297,6 +330,15 @@ function App() {
     setOrderNumber('')
   }
 
+  // Show a temporary success message
+  function showSuccess(message: string): void {
+    setSuccessMessage(message)
+
+    window.setTimeout(() => {
+      setSuccessMessage('')
+    }, 3000)
+  }
+
   return (
       <div className="app">
         <header className="topbar">
@@ -310,6 +352,10 @@ function App() {
             Backend: localhost:8080
           </div>
         </header>
+
+        {successMessage && (
+            <div className="success-message">{successMessage}</div>
+        )}
 
         {error && <div className="error-message">{error}</div>}
 
@@ -347,8 +393,16 @@ function App() {
               </label>
 
               <div className="form-actions">
-                <button className="primary-button" type="submit">
-                  {editingMissionId ? 'Update mission' : 'Create mission'}
+                <button
+                    className="primary-button"
+                    type="submit"
+                    disabled={isSavingMission}
+                >
+                  {isSavingMission
+                      ? 'Saving...'
+                      : editingMissionId
+                          ? 'Update mission'
+                          : 'Create mission'}
                 </button>
 
                 {editingMissionId && (
@@ -475,10 +529,16 @@ function App() {
                     </label>
 
                     <div className="form-actions waypoint-actions">
-                      <button className="primary-button" type="submit">
-                        {editingWaypointId
-                            ? 'Update waypoint'
-                            : 'Add waypoint'}
+                      <button
+                          className="primary-button"
+                          type="submit"
+                          disabled={isSavingWaypoint}
+                      >
+                        {isSavingWaypoint
+                            ? 'Saving...'
+                            : editingWaypointId
+                                ? 'Update waypoint'
+                                : 'Add waypoint'}
                       </button>
 
                       {editingWaypointId && (
