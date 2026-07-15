@@ -6,6 +6,9 @@ import com.martynas.droneplanner.dto.MissionRequest;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.util.List;
 
 // Handles HTTP requests for missions
@@ -36,6 +39,7 @@ public class MissionController {
 
     // Delete mission
     @DeleteMapping("/missions/{missionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMission(@PathVariable Long missionId) {
         missionService.deleteMission(missionId);
     }
