@@ -2,15 +2,12 @@ package com.martynas.droneplanner.controller;
 
 import com.martynas.droneplanner.entity.Waypoint;
 import com.martynas.droneplanner.service.WaypointService;
+import com.martynas.droneplanner.dto.WaypointRequest;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Handles HTTP requests for missions
+// Handles HTTP requests for waypoints
 @RestController
 public class WaypointController {
 
@@ -24,22 +21,22 @@ public class WaypointController {
     // Create new waypoint
     @PostMapping("/missions/{missionId}/waypoints")
     public Waypoint createWaypoint(@PathVariable long missionId,
-                                   @RequestBody Waypoint waypoint) {
+                                   @RequestBody WaypointRequest request) {
         return waypointService.createWaypoint(
-                waypoint.getLatitude(),
-                waypoint.getLongitude(),
-                waypoint.getAltitude(),
-                waypoint.getOrderNumber(),
+                request.getLatitude(),
+                request.getLongitude(),
+                request.getAltitude(),
+                request.getOrderNumber(),
                 missionId
         );
     }
 
     // Return all waypoints for mission
     @GetMapping("/missions/{missionId}/waypoints")
-    public List<Waypoint> getwaypointsByMission(
+    public List<Waypoint> getWaypointsByMission(
             @PathVariable Long missionId
     ) {
-        return waypointService.getwaypointsByMission(missionId);
+        return waypointService.getWaypointsByMission(missionId);
     }
 
     // Delete waypoint
@@ -52,14 +49,14 @@ public class WaypointController {
     @PutMapping("/waypoints/{waypointId}")
     public Waypoint updateWaypoint(
             @PathVariable Long waypointId,
-            @RequestBody Waypoint waypoint
+            @RequestBody WaypointRequest request
     ) {
         return waypointService.updateWaypoint(
                 waypointId,
-                waypoint.getLatitude(),
-                waypoint.getLongitude(),
-                waypoint.getAltitude(),
-                waypoint.getOrderNumber()
+                request.getLatitude(),
+                request.getLongitude(),
+                request.getAltitude(),
+                request.getOrderNumber()
         );
     }
 }

@@ -48,12 +48,6 @@ public class WaypointService {
         return waypointRepository.save(waypoint);
     }
 
-    // Get all mission waypoints
-    public List<Waypoint> getwaypointsByMission(Long missionId) {
-        return waypointRepository.
-                findByMissionIdOrderByOrderNumberAsc(missionId);
-    }
-
     // Delete waypoint
     public void deleteWaypoint(Long waypointId) {
         waypointRepository.findById(waypointId)
@@ -87,5 +81,21 @@ public class WaypointService {
         waypoint.setOrderNumber(orderNumber);
 
         return waypointRepository.save(waypoint);
+    }
+
+    // Return all waypoints for a mission
+    public List<Waypoint> getWaypointsByMission(Long missionId) {
+
+        // Check that the mission exists
+        missionRepository.findById(missionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mission not found with id: " + missionId
+                        )
+                );
+
+        // Return waypoints sorted by route order
+        return waypointRepository
+                .findByMissionIdOrderByOrderNumberAsc(missionId);
     }
 }

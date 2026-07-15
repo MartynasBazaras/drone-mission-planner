@@ -2,7 +2,9 @@ package com.martynas.droneplanner.controller;
 
 import com.martynas.droneplanner.entity.Mission;
 import com.martynas.droneplanner.service.MissionService;
+import com.martynas.droneplanner.dto.MissionRequest;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -25,10 +27,10 @@ public class MissionController {
 
     // Create a new mission
     @PostMapping("/missions")
-    public Mission createMission(@RequestBody Mission mission) {
+    public Mission createMission(@Valid @RequestBody MissionRequest request) {
         return missionService.createMission(
-                mission.getName(),
-                mission.getDescription()
+                request.getName(),
+                request.getDescription()
         );
     }
 
@@ -42,12 +44,11 @@ public class MissionController {
     @PutMapping("/missions/{missionId}")
     public Mission updateMission(
             @PathVariable Long missionId,
-            @RequestBody Mission mission
-    ) {
+            @Valid @RequestBody MissionRequest request) {
         return missionService.updateMission(
                 missionId,
-                mission.getName(),
-                mission.getDescription()
+                request.getName(),
+                request.getDescription()
         );
     }
 }
